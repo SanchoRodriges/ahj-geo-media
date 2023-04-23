@@ -1,7 +1,7 @@
 export default class Validator {
- 
   static geoValidate(str) {
-    return /\d+\.\d+\, \d+.\d+/.test(str);
+    // eslint-disable-next-line
+    const check = /\d+\.\d+\, \d+.\d+/;
+    return check.test(str);
   }
-  
 }

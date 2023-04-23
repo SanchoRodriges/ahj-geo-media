@@ -2,55 +2,56 @@ import Validator from "./validate";
 
 export default class Notes {
   constructor() {
-    this.notesDiv = document.querySelector('.notes');
-    this.addNoteForm = document.querySelector('.add-note-form');
-    this.modal = document.querySelector('.modal');
+    this.notesDiv = document.querySelector(".notes");
+    this.addNoteForm = document.querySelector(".add-note-form");
+    this.modal = document.querySelector(".modal");
     this.getGeo();
     this.events();
   }
 
   // получаем координаты при открытии страницы
   getGeo() {
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (data) => {
           const { latitude, longitude } = data.coords;
-          this.coords = latitude + ', ' + longitude;
+          this.coords = latitude + ", " + longitude;
         },
         (err) => {
-          this.modal.classList.add('active');
+          this.modal.classList.add("active");
         },
         { enableHighAccuracy: true }
       );
     }
-    
   }
 
   // обработка событий
   events() {
-    this.addNoteForm.addEventListener('submit', this.addNote);
+    this.addNoteForm.addEventListener("submit", this.addNote);
 
-    const addGeoFormOk = this.modal.querySelector('.ok-form-btn');
-    addGeoFormOk.addEventListener('click', this.addGeoForm);
+    const addGeoFormOk = this.modal.querySelector(".ok-form-btn");
+    addGeoFormOk.addEventListener("click", this.addGeoForm);
 
-    const addGeoFormCancel = this.modal.querySelector('.cancel-form-btn');
-    addGeoFormCancel.addEventListener('click', this.cancelGeoForm);
+    const addGeoFormCancel = this.modal.querySelector(".cancel-form-btn");
+    addGeoFormCancel.addEventListener("click", this.cancelGeoForm);
   }
 
   // отправка формы добавления заметки
   addNote = (e) => {
     e.preventDefault();
 
-    const addNoteInput = document.querySelector('.add-note-data');
+    const addNoteInput = document.querySelector(".add-note-data");
 
-    if (addNoteInput.value === '') {
-      this.errorMessage(e.target, 'Пожалуйста, добавьте текст');
+    if (addNoteInput.value === "") {
+      this.errorMessage(e.target, "Пожалуйста, добавьте текст");
       return;
     }
 
     if (!this.coords) {
-      this.errorMessage(e.target, 'Пожалуйста, разрешите доступ к местоположению');
+      this.errorMessage(
+        e.target,
+        "Пожалуйста, разрешите доступ к местоположению"
+      );
       return;
     }
 
@@ -58,41 +59,42 @@ export default class Notes {
     const time = Date.now();
 
     this.addDOMNote(message, time, this.coords);
-    addNoteInput.value = '';
-
-  }
-
-
+    addNoteInput.value = "";
+  };
 
   // получение координат через форму
+  // eslint-disable-next-line
   addGeoForm = (e) => {
     e.preventDefault();
 
-    const addGeoFormInput = this.modal.querySelector('.geo-form-input');
+    const addGeoFormInput = this.modal.querySelector(".geo-form-input");
 
-    if (addGeoFormInput.value === '') {
-      this.errorMessage(addGeoFormInput, 'Поле не может быть пустым')
+    if (addGeoFormInput.value === "") {
+      this.errorMessage(addGeoFormInput, "Поле не может быть пустым");
       return;
     }
 
     if (!Validator.geoValidate(addGeoFormInput.value)) {
-      this.errorMessage(addGeoFormInput, 'Указанные координаты не соответствуют формату')
+      this.errorMessage(
+        addGeoFormInput,
+        "Указанные координаты не соответствуют формату"
+      );
       return;
     }
-    
-    this.coords = addGeoFormInput.value
-    addGeoFormInput.value = '';
-    this.modal.classList.remove('active');
 
-  }
+    this.coords = addGeoFormInput.value;
+    addGeoFormInput.value = "";
+    this.modal.classList.remove("active");
+  };
 
   // кнопка отмена в форме получения координат
+  // eslint-disable-next-line
   cancelGeoForm = (e) => {
     e.preventDefault();
-    const addGeoFormInput = this.modal.querySelector('.geo-form-input');
-    addGeoFormInput.value = '';
-    this.modal.classList.remove('active');
-  }
+    const addGeoFormInput = this.modal.querySelector(".geo-form-input");
+    addGeoFormInput.value = "";
+    this.modal.classList.remove("active");
+  };
 
   // добавление заметки в список
   addDOMNote(message, time, coords) {
@@ -106,9 +108,9 @@ export default class Notes {
       </div>
       <div class="time">${this.timeToStr(time)}</div>
     </div>
-    `
+    `;
 
-    this.notesDiv.insertAdjacentHTML('afterbegin', html);
+    this.notesDiv.insertAdjacentHTML("afterbegin", html);
   }
 
   // обработка времени из timestamp в строку
@@ -126,20 +128,17 @@ export default class Notes {
 
   // сообщение об ошибке
   errorMessage(element, message) {
-    const {x, y} = element.getBoundingClientRect();
+    const { x, y } = element.getBoundingClientRect();
 
-    const div = document.createElement('div');
-    div.classList.add('error');
-    div.style.top = (y - 30) + 'px';
-    div.style.left = (x - 5) + 'px';
+    const div = document.createElement("div");
+    div.classList.add("error");
+    div.style.top = y - 30 + "px";
+    div.style.left = x - 5 + "px";
     div.innerHTML = message;
-    document.body.insertAdjacentElement('beforeend', div);
+    document.body.insertAdjacentElement("beforeend", div);
 
     setTimeout(() => {
       div.remove();
     }, 2000);
-
   }
-
 }
-
